@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check latest commit
     outputs:
-      should-run: ${{ steps.should-run.outputs.should_run }}
+      should-run: ${{ steps.should-run.outputs.should-run }}
     steps:
       - uses: actions/checkout@v3
         with:
