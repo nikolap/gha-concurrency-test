@@ -1,0 +1,41 @@
+name: 'Concurrency test'
+on:
+  push:
+
+jobs:
+  should-run:
+    runs-on: ubuntu-latest
+    name: Check latest commit
+    outputs:
+      should-run: ${{ steps.should-run.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: print current commit
+        run: echo ${{ github.sha }}
+      - id: should-run
+        continue-on-error: true
+        name: check pulled commit sha matches remote sha
+        run:
+          test $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | sed 's/\// /g') | cut -f1) && echo "should-run=true" >> $GITHUB_OUTPUT || echo "should-run=false" >> $GITHUB_OUTPUT
+
+  test-job:
+    runs-on: ubuntu-latest
+    name: Test job
+    needs: should-run
+    if: ${{ needs.should-run.outputs.should-run != 'false' }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Wait
+        run: sleep 1m
+
+      - name: Succeed
+        run: echo "success"
