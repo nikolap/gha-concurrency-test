@@ -17,8 +17,10 @@ jobs:
       - id: should-run
         continue-on-error: true
         name: check pulled commit sha matches remote sha
-        run:
-          test $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | sed 's/\// /g') | cut -f1) && echo "should-run=true" >> $GITHUB_OUTPUT || echo "should-run=false" >> $GITHUB_OUTPUT
+        run: |
+          test $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | sed 's/\// /g') | cut -f1) \
+            && echo "should-run=true" >> $GITHUB_OUTPUT \
+            || echo "should-run=false" >> $GITHUB_OUTPUT
 
   test-job:
     runs-on: ubuntu-latest
