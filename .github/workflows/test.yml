@@ -36,6 +36,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test exception when empty
+        run: |
+          DEV_DB_URL=
+          PROD_DB_URL="asdf"
+          # throw error when one of the variables is empty, or does not start with postgres://
+          if [[ -z "$DEV_DB_URL" || -z "$PROD_DB_URL" || ! "$DEV_DB_URL" =~ ^postgres:// || ! "$PROD_DB_URL" =~ ^postgres:// ]]; then
+              echo "DATABASE_URL is empty or does not start with postgres://"
+              exit 1
+          fi
+          echo "passed"
+
       - name: Wait
         run: sleep 10s
 
