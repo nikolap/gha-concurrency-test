@@ -38,8 +38,8 @@ jobs:
 
       - name: Test exception when empty
         run: |
-          DEV_DB_URL=
-          PROD_DB_URL="asdf"
+          DEV_DB_URL=postgres://asdf
+          PROD_DB_URL="postgres://qwer"
           # throw error when one of the variables is empty, or does not start with postgres://
           if [[ -z "$DEV_DB_URL" || -z "$PROD_DB_URL" || ! "$DEV_DB_URL" =~ ^postgres:// || ! "$PROD_DB_URL" =~ ^postgres:// ]]; then
               echo "DATABASE_URL is empty or does not start with postgres://"
